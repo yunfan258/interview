@@ -1,0 +1,24 @@
+.category{
+    display: flex;
+    gap: 8px;
+    
+}
+.tags{
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    .tag{
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        &:hover{
+            color: #00f;
+        }
+        .count{
+            padding: 2px 4px;
+            background-color: #f1f1f1;
+            border-radius: 12px;
+        }
+    }
+}

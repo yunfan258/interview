@@ -1,5 +1,5 @@
 import styles from './index.module.scss'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import { DataTable } from './DataTable'
 export const Main = ()=>{
     return (

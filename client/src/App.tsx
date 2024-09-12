@@ -1,15 +1,11 @@
-import { useState } from "react";
 import { Header } from "./modules/Header";
 import { Main } from "./modules/Main";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.scss";
 import { Answer } from "./modules/Answer";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="app">
       <Router>

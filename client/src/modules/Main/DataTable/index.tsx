@@ -40,14 +40,14 @@ import { data } from "@/data";
 export const columns: ColumnDef<any>[] = [
   {
     id: "select",
-    header: ({ column }) => <span className="ml-0.5 h-8">状态</span>,
+    header: () => <span className="ml-0.5 h-8">状态</span>,
     cell: ({ row }) => (
       <Checkbox
         className="ml-2"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        onClick={(e)=>e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       />
     ),
     enableSorting: false,
@@ -86,11 +86,8 @@ export const columns: ColumnDef<any>[] = [
       );
     },
     cell: ({ row }) => {
-      const navigate = useNavigate();
       return (
-        <div
-          className="w-360 min-h-8 flex items-center"
-        >
+        <div className="w-360 min-h-8 flex items-center">
           {row.getValue("title")}
         </div>
       );
@@ -100,7 +97,6 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "level",
     header: ({ column }) => (
       <Button
-        // className="h-4 w-4"
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
@@ -171,7 +167,7 @@ export function DataTable() {
     },
   });
 
-  const onClick = (index) => navigate(`/answer?index=${index}`);
+  const onClick = (index: number) => navigate(`/answer?index=${index}`);
 
   return (
     <div className="w-full data-table">
@@ -240,13 +236,12 @@ export function DataTable() {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} 
-                    className="cursor-pointer"
-                    onClick={(e)=>{
-                      onClick(row.index)
-                    }}
-                      
-
+                    <TableCell
+                      key={cell.id}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        onClick(row.index);
+                      }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -271,7 +266,7 @@ export function DataTable() {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {'选中 '}
+          {"选中 "}
           {table.getFilteredSelectedRowModel().rows.length} /{" "}
           {table.getFilteredRowModel().rows.length} 题
         </div>

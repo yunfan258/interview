@@ -50,13 +50,16 @@ export const Answer = () => {
       </Tabs>
       <footer>
         <Button variant="secondary" 
-          onClick={()=>setIndex(index===0?len-1:index-1)}
+          onClick={()=>{
+            const pre = index===0?len-1:index-1
+            window.history.replaceState({}, 'title', window.location.href.replace(/=\d+/, `=${pre}`));
+            setIndex(pre)
+          }}
         >上一题</Button>
         <Button variant="secondary" 
         onClick={()=>{
           const next = index===len-1?0:index+1
-          // console.log(queryParams)
-          // queryParams.set("index",next.toString())
+          window.history.replaceState({}, 'title', window.location.href.replace(/=\d+/, `=${next}`));
           setIndex(next)
         }}
         >下一题</Button>

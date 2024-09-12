@@ -1,6 +1,6 @@
 import { Header } from "./modules/Header";
 import { Main } from "./modules/Main";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.scss";
 import { Answer } from "./modules/Answer";
@@ -12,8 +12,9 @@ function App() {
         <Header />
         <main className="app-main">
           <Routes>
-            <Route path="/" element={<Main />} />
+            <Route path="/home" element={<Main />} />
             <Route path="/answer" element={<Answer />} />
+            <Route path="*" element={<Main />} />
           </Routes>
         </main>
       </Router>

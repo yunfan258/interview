@@ -9,7 +9,7 @@ import './index.scss'
 export const Header = () => {
     const navigate = useNavigate()
     const onClick = () =>{
-        navigate('/', { replace: true })
+        navigate('/home', { replace: true })
     }
     return (
         <header className="header">

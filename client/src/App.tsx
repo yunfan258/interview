@@ -1,6 +1,6 @@
 import { Header } from "./modules/Header";
 import { Main } from "./modules/Main";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.scss";
 import { Answer } from "./modules/Answer";

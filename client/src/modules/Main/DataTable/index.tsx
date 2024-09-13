@@ -33,17 +33,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import c from "classnames";
 import "./index.scss";
-
 import { data } from "@/data";
+import { useEffect } from "react";
 
 export const columns: ColumnDef<any>[] = [
   {
-    id: "select",
+    id: "status",
     header: () => <span className="ml-0.5 h-8">状态</span>,
     cell: ({ row }) => (
       <Checkbox
-        className="ml-2"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -51,7 +51,6 @@ export const columns: ColumnDef<any>[] = [
       />
     ),
     enableSorting: false,
-    enableHiding: false,
   },
   {
     id: "index",
@@ -61,7 +60,7 @@ export const columns: ColumnDef<any>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         序号
-        <ArrowUpDown className="ml-2 h-8 w-4" />
+        <ArrowUpDown className="ml-1 h-8 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
@@ -81,7 +80,7 @@ export const columns: ColumnDef<any>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           题目
-          <ArrowUpDown className="ml-2 h-8 w-4" />
+          <ArrowUpDown className="ml-1 h-8 w-4" />
         </Button>
       );
     },
@@ -101,7 +100,7 @@ export const columns: ColumnDef<any>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         难度
-        <ArrowUpDown className="ml-2 h-8 w-4" />
+        <ArrowUpDown className="ml-1 h-8 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
@@ -166,8 +165,34 @@ export function DataTable() {
       rowSelection,
     },
   });
+  function replaceURL(key:string,value:number | string) {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    if (params.has(key)) {
+      params.set(key, String(value));
+    } else {
+      params.append(key, String(value));
+    }
+    url.search = params.toString();
+    window.history.replaceState({}, '', url.toString());
+  }
+  function getURLParamsByKey(key:string) {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    return params.get(key)
+  }
+  const page = table.getState().pagination.pageIndex
 
-  const onClick = (index: number) => navigate(`/answer?index=${index}`);
+  useEffect(()=>{
+    const page = getURLParamsByKey('page') || 0
+    console.log(page)
+    table.setPageIndex(+page)
+    replaceURL('page', page);
+  },[])
+  
+  
+
+  const onClick = (index: number) => navigate(`/answer?index=${index}&page=${page}`);
 
   return (
     <div className="w-full data-table">
@@ -215,7 +240,11 @@ export function DataTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} 
+                      className={c({
+                        "others": header.id !== 'title'
+                      })}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -233,12 +262,15 @@ export function DataTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="cursor-pointer"
+                      className={c({
+                        'others': !cell.id.includes('title')
+                      })}
                       onClick={() => {
                         onClick(row.index);
                       }}
@@ -265,16 +297,27 @@ export function DataTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        {/* <div className="flex-1 text-sm text-muted-foreground">
           {"选中 "}
           {table.getFilteredSelectedRowModel().rows.length} /{" "}
           {table.getFilteredRowModel().rows.length} 题
+        </div> */}
+        
+        {/* <div>
+          <TablePagination />
+        </div> */}
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getState().pagination.pageIndex} /{" "}
+          {table.getPageCount()} 页
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
+            onClick={() => {
+              replaceURL('page', page-1)
+              table.previousPage()
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             上一页
@@ -282,7 +325,11 @@ export function DataTable() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
+            onClick={() => {
+              replaceURL('page', page+1)
+              table.nextPage()
+              // console.log(table.getState().pagination.pageIndex)
+            }}
             disabled={!table.getCanNextPage()}
           >
             下一页

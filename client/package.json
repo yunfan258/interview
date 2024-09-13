@@ -19,6 +19,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@tanstack/react-table": "^8.20.5",
     "class-variance-authority": "^0.7.0",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "highlight.js": "^11.10.0",
     "lucide-react": "^0.439.0",

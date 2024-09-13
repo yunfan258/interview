@@ -33,15 +33,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { classfication } from "@/classfication.ts";
 import c from "classnames";
 import "./index.scss";
-import { data } from "@/data";
+import { data } from "@/data.ts";
 import { useEffect } from "react";
 
+function decodeUnicode(unicodeStr: string) {
+  const splitStr = unicodeStr.split("\\u");
+  if (splitStr.length === 1) {
+    return unicodeStr;
+  }
+  let chineseStr = "";
+  for (let i = 0, len = splitStr.length; i < len; i++) {
+    if (splitStr[i] === "") continue;
+    chineseStr += String.fromCharCode(parseInt(splitStr[i], 16));
+  }
+  return chineseStr;
+}
 export const columns: ColumnDef<any>[] = [
   {
     id: "status",
-    header: () => <span className="ml-0.5 h-8">状态</span>,
+    header: () => <span className="ml-0.5 w-2 h-8">状态</span>,
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -108,8 +130,14 @@ export const columns: ColumnDef<any>[] = [
     ),
   },
   {
+    id: "tag",
+    accessorKey: "tag",
+    header: () => <span className="ml-0.5 w-2 h-8">标签</span>,
+    cell: ({ row }) => decodeUnicode(row.getValue("tag")),
+  },
+  {
     id: "actions",
-    header: "操作",
+    header: () => <span className="ml-0.5 w-2 h-8">操作</span>,
     cell: ({ row }) => {
       const payment = row.original;
 
@@ -165,7 +193,18 @@ export function DataTable() {
       rowSelection,
     },
   });
-  function replaceURL(key:string,value:number | string) {
+  const hideColunms = (keys: string[]): { [key: string]: boolean } => {
+    return keys.reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {} as { [key: string]: boolean });
+  };
+  useEffect(() => {
+    const hiddenColumns = ["status", "level", "actions", "exerciseKey", "tag"];
+    hiddenColumns && table.setColumnVisibility(hideColunms(hiddenColumns));
+  }, [table]);
+
+  function replaceURL(key: string, value: number | string) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     if (params.has(key)) {
@@ -174,25 +213,23 @@ export function DataTable() {
       params.append(key, String(value));
     }
     url.search = params.toString();
-    window.history.replaceState({}, '', url.toString());
+    window.history.replaceState({}, "", url.toString());
   }
-  function getURLParamsByKey(key:string) {
+  function getURLParamsByKey(key: string) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
-    return params.get(key)
+    return params.get(key);
   }
-  const page = table.getState().pagination.pageIndex
+  const page = table.getState().pagination.pageIndex;
 
-  useEffect(()=>{
-    const page = getURLParamsByKey('page') || 0
-    console.log(page)
-    table.setPageIndex(+page)
-    replaceURL('page', page);
-  },[])
-  
-  
+  useEffect(() => {
+    const page = getURLParamsByKey("page") || 0;
+    table.setPageIndex(+page);
+    replaceURL("page", page);
+  }, []);
 
-  const onClick = (index: number) => navigate(`/answer?index=${index}&page=${page}`);
+  const onClick = (index: number) =>
+    navigate(`/answer?index=${index}&page=${page}`);
 
   return (
     <div className="w-full data-table">
@@ -205,6 +242,29 @@ export function DataTable() {
           }
           className="max-w-sm"
         />
+        <Select
+          onValueChange={(value) => {
+            table.getColumn("tag")?.setFilterValue(value);
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="标签" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {Object.keys(classfication).map((item:string) => {
+                return (
+                  <SelectItem value={item} key={item}>
+                    {decodeUnicode(item)}
+                    <span className="text-xs text-[#ccc]">
+                      （{classfication?.[item]?.length}）
+                    </span>
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -240,9 +300,11 @@ export function DataTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} 
+                    <TableHead
+                      key={header.id}
                       className={c({
-                        "others": header.id !== 'title'
+                        others: header.id !== "title",
+                        tag: header.id === "tag",
                       })}
                     >
                       {header.isPlaceholder
@@ -269,7 +331,7 @@ export function DataTable() {
                     <TableCell
                       key={cell.id}
                       className={c({
-                        'others': !cell.id.includes('title')
+                        others: !cell.id.includes("title"),
                       })}
                       onClick={() => {
                         onClick(row.index);
@@ -297,26 +359,16 @@ export function DataTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-          {"选中 "}
-          {table.getFilteredSelectedRowModel().rows.length} /{" "}
-          {table.getFilteredRowModel().rows.length} 题
-        </div> */}
-        
-        {/* <div>
-          <TablePagination />
-        </div> */}
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getState().pagination.pageIndex} /{" "}
-          {table.getPageCount()} 页
+          {table.getState().pagination.pageIndex} / {table.getPageCount()} 页
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              replaceURL('page', page-1)
-              table.previousPage()
+              replaceURL("page", page - 1);
+              table.previousPage();
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -326,9 +378,8 @@ export function DataTable() {
             variant="outline"
             size="sm"
             onClick={() => {
-              replaceURL('page', page+1)
-              table.nextPage()
-              // console.log(table.getState().pagination.pageIndex)
+              replaceURL("page", page + 1);
+              table.nextPage();
             }}
             disabled={!table.getCanNextPage()}
           >

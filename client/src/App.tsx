@@ -1,33 +1,22 @@
 import { Header } from "./modules/Header";
 import { Main } from "./modules/Main";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import "./App.scss";
 import { Answer } from "./modules/Answer";
+import { Home } from "./modules/Home";
 
 function App() {
   return (
-    <div className="app">
-      <Router>
-        <Header />
-        <main className="app-main">
-          <Routes>
-            <Route path="/home" element={<Main />} />
-            <Route path="/answer" element={<Answer />} />
-            <Route path="*" element={<Main />} />
-          </Routes>
-        </main>
-      </Router>
-
-      {/* <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList>
-          <TabsTrigger value="account">首页</TabsTrigger>
-          <TabsTrigger value="password">刷题</TabsTrigger>
-        </TabsList>
-        <TabsContent value="account">Make changes to your account here.</TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
-      </Tabs> */}
-    </div>
+    <Router>
+      <Header />
+      <main className="mx-auto mt-14 mb-0  box-border w-full sm:w-4/5">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/main" element={<Main />} />
+          <Route path="/answer" element={<Answer />} />
+          <Route path="*" element={<Main />} />
+        </Routes>
+      </main>
+    </Router>
   );
 }
 

@@ -44,7 +44,6 @@ import {
 } from "@/components/ui/select";
 import { classfication } from "@/classfication.ts";
 import c from "classnames";
-import "./index.scss";
 import { data } from "@/data.ts";
 import { useEffect } from "react";
 
@@ -60,6 +59,8 @@ function decodeUnicode(unicodeStr: string) {
   }
   return chineseStr;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const columns: ColumnDef<any>[] = [
   {
     id: "status",
@@ -201,7 +202,7 @@ export function DataTable() {
   };
   useEffect(() => {
     const hiddenColumns = ["status", "level", "actions", "exerciseKey", "tag"];
-    hiddenColumns && table.setColumnVisibility(hideColunms(hiddenColumns));
+    table.setColumnVisibility(hideColunms(hiddenColumns));
   }, [table]);
 
   function replaceURL(key: string, value: number | string) {
@@ -221,15 +222,26 @@ export function DataTable() {
     return params.get(key);
   }
   const page = table.getState().pagination.pageIndex;
+  const query = table.getColumn("title")?.getFilterValue() || "";
+  const tag = table.getColumn("tag")?.getFilterValue() || "";
 
   useEffect(() => {
     const page = getURLParamsByKey("page") || 0;
+    const query = getURLParamsByKey("query") || '';
+    const tag = getURLParamsByKey("tag") || '';
+
     table.setPageIndex(+page);
+    table.getColumn("title")?.setFilterValue(query)
+    table.getColumn("tag")?.setFilterValue(tag)
+
     replaceURL("page", page);
+    replaceURL("query", query);
+    replaceURL("tag", tag);
   }, []);
 
-  const onClick = (index: number) =>
-    navigate(`/answer?index=${index}&page=${page}`);
+  const onClick = (index: number) =>{
+    navigate(`/answer?index=${index}&page=${page}&query=${query}&tag=${tag}`);
+  }
 
   return (
     <div className="w-full data-table">
@@ -240,19 +252,22 @@ export function DataTable() {
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
+          onBlur={(event) => replaceURL("query", event.target.value)}
           className="max-w-sm"
         />
         <Select
           onValueChange={(value) => {
+            replaceURL("tag", value);
             table.getColumn("tag")?.setFilterValue(value);
           }}
+          value={tag as string}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="标签" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {Object.keys(classfication).map((item:string) => {
+              {Object.keys(classfication).map((item: string) => {
                 return (
                   <SelectItem value={item} key={item}>
                     {decodeUnicode(item)}
@@ -303,8 +318,7 @@ export function DataTable() {
                     <TableHead
                       key={header.id}
                       className={c({
-                        others: header.id !== "title",
-                        tag: header.id === "tag",
+                        "text-center w-24": header.id !== "title",
                       })}
                     >
                       {header.isPlaceholder
@@ -324,14 +338,15 @@ export function DataTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer odd:bg-white even:bg-gray-50"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={c({
-                        others: !cell.id.includes("title"),
+                        "text-center text-xs text-neutral-600":
+                          !cell.id.includes("title"),
                       })}
                       onClick={() => {
                         onClick(row.index);

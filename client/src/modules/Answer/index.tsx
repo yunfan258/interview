@@ -1,11 +1,10 @@
-import "./index.scss";
 import { data } from "@/data";
 import { useLocation } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { ExtraProps } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import gfm from "remark-gfm";
-
+import { ClassAttributes, HTMLAttributes } from "react";
 import "highlight.js/styles/atom-one-dark.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,9 +12,9 @@ import { useState } from "react";
 const len = data.length;
 
 const components = {
-  code({ inline, className, children, ...props }: any) {
+  code({children, ...props }: ClassAttributes<HTMLElement> & HTMLAttributes<HTMLElement> & ExtraProps) {
     return (
-      <code {...props} className="inline-code">
+      <code {...props} className="before:hidden after:hidden">
         {children}
       </code>
     );
@@ -40,7 +39,7 @@ export const Answer = () => {
   
   return (
     <div
-      className="answer"
+      className="flex flex-col gap-6 mb-14"
     >
       <ReactMarkdown className={"prose prose-lg max-w-none"}>
         {`【${+index + 1}】${data[+index]?.title}`}
@@ -61,7 +60,7 @@ export const Answer = () => {
         </TabsContent>
         <TabsContent value="password"></TabsContent>
       </Tabs>
-      <footer>
+      <footer className="fixed bottom-0 py-3 bg-white border-t border-solid border-t-gray-200 flex justify-end gap-3 sm:w-4/5 sm:left-[10%]">
         <Button
           variant="secondary"
           onClick={() => {

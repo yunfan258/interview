@@ -51,9 +51,7 @@ const contents = [
       content: [
         "微信搜索小程序“前端面试题宝典”，或者使用微信扫描下方二维码，即可进行刷题。小程序支持“题目收藏”等个性化功能哦~",
       ],
-      children: (
-        <img className="m-auto" src={logoURL} />
-      ),
+      children: <img className="m-auto" src={logoURL} />,
     },
     block2: {
       title: "PC端",
@@ -71,18 +69,14 @@ const contents = [
       content: [
         "官方公众号“前端面试”，不定期提供大厂面经、技术文章，赶紧扫码关注吧~",
       ],
-      children: (
-        <img className="m-auto" src={logoURL} />
-      ),
+      children: <img className="m-auto" src={logoURL} />,
     },
     block2: {
       title: "加交流群，与大家共同成长",
       content: [
         "我们成立了微信交流群，大家可以在群里讨论技术问题，一块成长。添加工作人员微信，备注“加群”，即可入群哦。",
       ],
-      children: (
-        <img className="m-auto" src={logoURL} />
-      ),
+      children: <img className="m-auto" src={logoURL} />,
     },
   },
 ];
@@ -90,46 +84,48 @@ const contents = [
 export const Home = () => {
   return (
     <div>
-      <Carousel>
+      <Carousel className="-mx-3">
         <CarouselContent>
-          {imgs.map((src) => {
-            return (
-              <CarouselItem key={src}>
-                <img className="w-full" src={src} alt="" />
-              </CarouselItem>
-            );
-          })}
+          {imgs.map((src) => (
+            <CarouselItem key={src}>
+              <img className="w-full" src={src} alt="" />
+            </CarouselItem>
+          ))}
         </CarouselContent>
         <CarouselPrevious className=" translate-x-16" />
         <CarouselNext className="-translate-x-16" />
       </Carousel>
-      <main className="text-3xl text-center my-10">
-        前端面试题宝典，打造更专业的前端面试题库
+      <main className="text-2xl sm:text-3xl text-center my-10">
+        面霸修炼场，铸就新一代面霸
       </main>
-      <Tabs defaultValue="introduction" className="flex w-full">
-        <TabsList className="flex flex-col justify-start w-[200px] h-[450px] bg-white">
+      <Tabs defaultValue="introduction" className="sm:flex w-full">
+        <TabsList className=" flex sm:flex-col justify-start sm:w-[200px] sm:h-[450px]  sm:bg-white">
           {tabs.map(({ title, content, value }) => {
             return (
-              <TabsTrigger className="p-0 m-0" value={value} key={value}>
+              <TabsTrigger
+                className="p-0 m-0 flex-1 sm:grow-0"
+                value={value}
+                key={value}
+              >
                 <TabItem title={title} content={content}></TabItem>
               </TabsTrigger>
             );
           })}
         </TabsList>
         {contents.map(({ value, block1, block2 }) => {
-            return (
-              <TabsContent className="mt-0" value={value} key={value} >
-                <div className="flex gap-6 p-12 h-[450px] bg-gray-50">
+          return (
+            <TabsContent className="mt-0" value={value} key={value}>
+              <div className="flex gap-6 p-12  bg-gray-50 flex-col sm:flex-row sm:h-[450px]">
                 <Article title={block1.title} sections={block1.content}>
-                    {block1.children}
+                  {block1.children}
                 </Article>
                 <Article title={block2.title} sections={block2.content}>
-                    {block2.children}
+                  {block2.children}
                 </Article>
-                </div>
-              </TabsContent>
-            );
-          })}
+              </div>
+            </TabsContent>
+          );
+        })}
       </Tabs>
     </div>
   );

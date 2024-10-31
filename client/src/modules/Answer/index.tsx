@@ -60,7 +60,7 @@ export const Answer = () => {
         </TabsContent>
         <TabsContent value="password"></TabsContent>
       </Tabs>
-      <footer className="fixed bottom-0 py-3 bg-white border-t border-solid border-t-gray-200 flex justify-end gap-3 sm:w-4/5 sm:left-[10%]">
+      <footer className="fixed left-0 bottom-0 p-3 bg-white border-t border-solid border-t-gray-200 flex justify-end gap-3 box-border w-[100%] sm:w-4/5 sm:left-[10%]">
         <Button
           variant="secondary"
           onClick={() => {

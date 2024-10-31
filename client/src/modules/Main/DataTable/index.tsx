@@ -46,21 +46,8 @@ import { classfication } from "@/classfication.ts";
 import c from "classnames";
 import { data } from "@/data.ts";
 import { useEffect } from "react";
+import { decodeUnicode, replaceURL, getURLParamsByKey } from "@/utils";
 
-function decodeUnicode(unicodeStr: string) {
-  const splitStr = unicodeStr.split("\\u");
-  if (splitStr.length === 1) {
-    return unicodeStr;
-  }
-  let chineseStr = "";
-  for (let i = 0, len = splitStr.length; i < len; i++) {
-    if (splitStr[i] === "") continue;
-    chineseStr += String.fromCharCode(parseInt(splitStr[i], 16));
-  }
-  return chineseStr;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const columns: ColumnDef<any>[] = [
   {
     id: "status",
@@ -139,30 +126,26 @@ export const columns: ColumnDef<any>[] = [
   {
     id: "actions",
     header: () => <span className="ml-0.5 w-2 h-8">操作</span>,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-4 w-4 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              复制题目
-            </DropdownMenuItem>
-            <DropdownMenuItem>收藏</DropdownMenuItem>
-            <DropdownMenuItem>加入错题集</DropdownMenuItem>
-            <DropdownMenuItem>已掌握</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-4 w-4 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(row.original.id)}
+          >
+            复制题目
+          </DropdownMenuItem>
+          <DropdownMenuItem>收藏</DropdownMenuItem>
+          <DropdownMenuItem>加入错题集</DropdownMenuItem>
+          <DropdownMenuItem>已掌握</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
   },
 ];
 
@@ -194,6 +177,11 @@ export function DataTable() {
       rowSelection,
     },
   });
+
+  const page = table.getState().pagination.pageIndex;
+  const query = table.getColumn("title")?.getFilterValue() || "";
+  const tag = table.getColumn("tag")?.getFilterValue() || "";
+
   const hideColunms = (keys: string[]): { [key: string]: boolean } => {
     return keys.reduce((acc, key) => {
       acc[key] = false;
@@ -205,43 +193,19 @@ export function DataTable() {
     table.setColumnVisibility(hideColunms(hiddenColumns));
   }, [table]);
 
-  function replaceURL(key: string, value: number | string) {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    if (params.has(key)) {
-      params.set(key, String(value));
-    } else {
-      params.append(key, String(value));
-    }
-    url.search = params.toString();
-    window.history.replaceState({}, "", url.toString());
-  }
-  function getURLParamsByKey(key: string) {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    return params.get(key);
-  }
-  const page = table.getState().pagination.pageIndex;
-  const query = table.getColumn("title")?.getFilterValue() || "";
-  const tag = table.getColumn("tag")?.getFilterValue() || "";
-
   useEffect(() => {
     const page = getURLParamsByKey("page") || 0;
-    const query = getURLParamsByKey("query") || '';
-    const tag = getURLParamsByKey("tag") || '';
+    const query = getURLParamsByKey("query") || "";
+    const tag = getURLParamsByKey("tag") || "";
 
     table.setPageIndex(+page);
-    table.getColumn("title")?.setFilterValue(query)
-    table.getColumn("tag")?.setFilterValue(tag)
+    table.getColumn("title")?.setFilterValue(query);
+    table.getColumn("tag")?.setFilterValue(tag);
 
     replaceURL("page", page);
     replaceURL("query", query);
     replaceURL("tag", tag);
   }, []);
-
-  const onClick = (index: number) =>{
-    navigate(`/answer?index=${index}&page=${page}&query=${query}&tag=${tag}`);
-  }
 
   return (
     <div className="w-full data-table">
@@ -267,16 +231,14 @@ export function DataTable() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {Object.keys(classfication).map((item: string) => {
-                return (
-                  <SelectItem value={item} key={item}>
-                    {decodeUnicode(item)}
-                    <span className="text-xs text-[#ccc]">
-                      （{classfication?.[item]?.length}）
-                    </span>
-                  </SelectItem>
-                );
-              })}
+              {Object.keys(classfication).map((item: string) => (
+                <SelectItem value={item} key={item} >
+                  {decodeUnicode(item)}
+                  <span className="text-xs text-gray-400">
+                    （{classfication?.[item]?.length}）
+                  </span>
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -290,21 +252,17 @@ export function DataTable() {
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    defaultChecked={false}
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  defaultChecked={false}
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -313,23 +271,21 @@ export function DataTable() {
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={c({
-                        "text-center w-24": header.id !== "title",
-                      })}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={c({
+                      "text-center w-24": header.id !== "title",
+                    })}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -349,7 +305,9 @@ export function DataTable() {
                           !cell.id.includes("title"),
                       })}
                       onClick={() => {
-                        onClick(row.index);
+                        navigate(
+                          `/answer?index=${row.index}&page=${page}&query=${query}&tag=${tag}`
+                        );
                       }}
                     >
                       {flexRender(

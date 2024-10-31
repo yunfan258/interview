@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <Header />
-      <main className="mx-auto mt-14 mb-0  box-border w-full sm:w-4/5">
+      <main className="mx-auto mt-14 mb-0 px-3 box-border w-full sm:w-4/5">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/main" element={<Main />} />

@@ -46,7 +46,8 @@ import { classfication } from "@/classfication.ts";
 import c from "classnames";
 import { data } from "@/data.ts";
 import { useEffect } from "react";
-import { decodeUnicode, replaceURL, getURLParamsByKey } from "@/utils";
+import { decodeUnicode, replaceURL, getURLParamsByKey } from "@/utils/util";
+// import { service } from "@/utils/request";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -69,7 +70,7 @@ export const columns: ColumnDef<any>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        序号
+        题号
         <ArrowUpDown className="ml-1 h-8 w-4" />
       </Button>
     ),
@@ -177,6 +178,11 @@ export function DataTable() {
       rowSelection,
     },
   });
+
+  // service.getExercises().then((res) => {
+  //   console.log(res);
+  // });
+
 
   const page = table.getState().pagination.pageIndex;
   const query = table.getColumn("title")?.getFilterValue() || "";

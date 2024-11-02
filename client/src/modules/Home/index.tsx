@@ -9,8 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabItem } from "./TabItem";
 import { Article } from "./Article";
 import logoURL from "@/../assets/imgs/home.jpg";
+import { useTranslation } from "react-i18next";
 
-const tabs = [
+export const tabs = [
   { title: "平台介绍", content: "综合性的前端面试平台", value: "introduction" },
   { title: "访问方式", content: "支持小程序、PC端访问", value: "method" },
   {
@@ -26,7 +27,7 @@ const imgs = [
   "https://pic.leetcode.cn/1667274067-boYcDi-%E9%AB%98%E9%A2%91%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98%EF%BC%88%E5%B0%8F%EF%BC%89-%20%E9%A2%98%E5%BA%93.png?x-oss-process=image%2Fformat%2Cwebp",
 ];
 
-const contents = [
+export const contents = [
   {
     value: "introduction",
     block1: {
@@ -82,6 +83,7 @@ const contents = [
 ];
 
 export const Home = () => {
+  const { t } = useTranslation();
   return (
     <div>
       <Carousel className="-mx-3">
@@ -96,36 +98,38 @@ export const Home = () => {
         <CarouselNext className="-translate-x-16" />
       </Carousel>
       <main className="text-2xl sm:text-3xl text-center my-10">
-        面霸修炼场，铸就新一代面霸
+        {t("面霸修炼场，铸就新一代面霸")}
       </main>
       <Tabs defaultValue="introduction" className="sm:flex w-full">
-        <TabsList className=" flex sm:flex-col justify-start sm:w-[200px] sm:h-[450px]  sm:bg-white">
-          {tabs.map(({ title, content, value }) => {
-            return (
-              <TabsTrigger
-                className="p-0 m-0 flex-1 sm:grow-0"
-                value={value}
-                key={value}
-              >
-                <TabItem title={title} content={content}></TabItem>
-              </TabsTrigger>
-            );
-          })}
+        <TabsList className=" flex sm:flex-col justify-start h-fit sm:w-[200px] sm:h-[450px]  sm:bg-white">
+          {tabs.map(({ title, content, value }) => (
+            <TabsTrigger
+              className="p-0 m-0 flex-1 sm:grow-0"
+              value={value}
+              key={value}
+            >
+              <TabItem title={t(title)} content={t(content)}></TabItem>
+            </TabsTrigger>
+          ))}
         </TabsList>
-        {contents.map(({ value, block1, block2 }) => {
-          return (
-            <TabsContent className="mt-0" value={value} key={value}>
-              <div className="flex gap-6 p-12  bg-gray-50 flex-col sm:flex-row sm:h-[450px]">
-                <Article title={block1.title} sections={block1.content}>
-                  {block1.children}
-                </Article>
-                <Article title={block2.title} sections={block2.content}>
-                  {block2.children}
-                </Article>
-              </div>
-            </TabsContent>
-          );
-        })}
+        {contents.map(({ value, block1, block2 }) => (
+          <TabsContent className="mt-0" value={value} key={value}>
+            <div className="flex gap-6 p-12  bg-gray-50 flex-col sm:flex-row sm:h-[450px]">
+              <Article
+                title={t(block1.title)}
+                sections={block1.content.map((i) => t(i))}
+              >
+                {block1.children}
+              </Article>
+              <Article
+                title={t(block2.title)}
+                sections={block2.content.map((i) => t(i))}
+              >
+                {block2.children}
+              </Article>
+            </div>
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );

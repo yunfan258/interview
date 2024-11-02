@@ -1,0 +1,27 @@
+{
+  "translation": {
+    "面霸修炼场，铸就新一代面霸": "The training ground for a new generation of face masters",
+    "平台介绍": "Platform Introduction",
+    "综合性的前端面试平台": "Comprehensive front-end interview platform",
+    "访问方式": "access method",
+    "支持小程序、PC端访问": "Support for small programs, PC access",
+    "关注、加群": "Follow, add group",
+    "关注公众号，加群与大家分享面试经验": "Follow the public number, add the group to share the interview experience with everyone",
+    "综合性的前端面试平台，致力于打造一个全新的面试平台": "Comprehensive front-end interview platform dedicated to creating a new interview platform",
+    "“前端面试题宝典”是一个支持提供面试题库、面试技巧、面试经历、技术文章等诸多内容，综合性的前端面试平台。目前题库已录入 1000+ 前端常见面试题，覆盖 22 类前端方向。并且我们还提供了前端面试辅导服务，由大厂面试官进行一对一的面试辅导。": "“Front-end interview questions dictionary” is a comprehensive front-end interview platform to support the provision of interview question bank, interview skills, interview experience, technical articles and other content. At present, the question bank has recorded 1000+ front-end common interview questions, covering 22 types of front-end direction. And we also provide front-end interview coaching services, one-on-one interview coaching by interviewers from large factories.",
+    "做更专业的刷题工具": "Make a more professional brushing tool",
+    "各种技术论坛中的面试题集有很多，但是链接分散，而且维护人员的技术良莠不齐，很多题库甚至长期无人维护，可能对大家进行面试准备时造成困扰。": "There are a lot of interview question sets in various technical forums, but the links are scattered and the maintainers have mixed skills, and many of them are even unmaintained for a long period of time, which may be a problem for people to prepare for interviews.",
+    "“前端面试题宝典”的目标是做全网更专业的前端面试题库。": "The goal of “Front-end Interview Questions Dictionary” is to be a more professional front-end interview questions database on the whole network.",
+    "“前端面试题宝典”的题库中，所有题目都经过团队成员的校对与审核，保证答案的准确性和实效性。如果大家在使用过程中，对于题目和答案有任何疑问，可以直接添加工作人员微信（微信号：interview-fe2），加群进行反馈。": "All the questions in the “Front-end Interview Questions Dictionary” database have been proofread and reviewed by team members to ensure the accuracy and effectiveness of the answers. If you have any questions about the questions and answers in the process of use, you can directly add the staff WeChat (micro-signal: interview-fe2), add the group for feedback.",
+    "小程序端": "applet side",
+    "微信搜索小程序“前端面试题宝典”，或者使用微信扫描下方二维码，即可进行刷题。小程序支持“题目收藏”等个性化功能哦~": "WeChat search the small program “front-end interview questions treasure dictionary”, or use WeChat to scan the QR code below, you can brush the questions. The app supports personalized features such as “Topic Collection”.",
+    "PC端": "PC-based",
+    "《前端面试题宝典》的PC端，在众多用户的期许下，于2021年12月正式推出。访问 这儿 即可在PC端进行刷题。": "The PC side of “Front-end Interview Questions Dictionary” was officially launched in December 2021 with the expectation of many users. Visit here to brush up your questions on the PC side.",
+    "目前PC端已经支持免登录刷题，并且提供了免费题库和会员题库供大家使用。": "Currently the PC has support for login-free swiping and provides a free question bank and a member's question bank for you to use.",
+    "PC端的登录功能已在2022年2月份正式推出，使用微信扫码登录。并且将小程序和PC端的用户数据打通，实现多端同步刷题。": "The login function of the PC terminal has been officially launched in February 2022, using WeChat to sweep the code to log in. And the user data of the applet and the PC terminal will be connected, so as to realize the synchronization of brushing questions on multiple ends.",
+    "关注公众号，获取最新资讯": "Follow the public number to get the latest information",
+    "官方公众号“前端面试”，不定期提供大厂面经、技术文章，赶紧扫码关注吧~":"The official public number “front-end interview”, from time to time to provide interviews, technical articles, quickly scan the code to pay attention to it!",
+    "加交流群，与大家共同成长": "Add the exchange group, and grow together with everyone",
+    "我们成立了微信交流群，大家可以在群里讨论技术问题，一块成长。添加工作人员微信，备注“加群”，即可入群哦。":"We have set up a WeChat exchange group, where everyone can discuss technical issues and grow together. Add the staff WeChat, note \"add group\", and you can join the group"
+  }
+}
